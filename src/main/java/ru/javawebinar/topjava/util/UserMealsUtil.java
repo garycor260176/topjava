@@ -38,7 +38,6 @@ public class UserMealsUtil {
         }
 
         List<UserMealWithExcess> resultList = new ArrayList<>();
-
         for (UserMeal meal : meals) {
             if (TimeUtil.isBetweenHalfOpen(meal.getDateTime().toLocalTime(), startTime, endTime)) {
                 resultList.add(new UserMealWithExcess(meal.getDateTime(), meal.getDescription(), meal.getCalories(),
