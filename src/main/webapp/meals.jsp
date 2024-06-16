@@ -16,6 +16,8 @@
 <hr>
 <h2>Meals</h2>
 
+<p><a href="meals?action=create">Create</a></p>
+
 <table style="border: solid black 1px;">
     <tr>
         <th>DateTime</th>
@@ -27,6 +29,8 @@
             <td>${f:formatDateTime(meal.dateTime)}</td>
             <td>${meal.description}</td>
             <td align="right">${meal.calories}</td>
+            <td><a href="meals?action=edit&id=${meal.id}">Edit</a></td>
+            <td><a href="meals?action=delete&id=${meal.id}">Delete</a></td>
         </tr>
     </c:forEach>
 </table>
