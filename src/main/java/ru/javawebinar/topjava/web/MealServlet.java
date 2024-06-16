@@ -56,12 +56,10 @@ public class MealServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request,
                           HttpServletResponse response) throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
         log.debug("MealServlet->doPost | URL {} | Parameters {} ", request.getRequestURL(), request.getQueryString());
 
-        request.setCharacterEncoding("UTF-8");
-
         String id = request.getParameter("id");
-
         Meal meal = new Meal(id.isEmpty() ? null : Integer.parseInt(id),
                 LocalDateTime.parse(request.getParameter("dateTime")), request.getParameter("description"),
                 Integer.parseInt(request.getParameter("calories")));
