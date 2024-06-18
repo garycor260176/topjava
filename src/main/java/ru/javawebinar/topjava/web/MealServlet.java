@@ -1,23 +1,20 @@
 package ru.javawebinar.topjava.web;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import ru.javawebinar.topjava.model.Meal;
-import ru.javawebinar.topjava.repository.MealRepository;
-import ru.javawebinar.topjava.repository.inmemory.InMemoryMealRepository;
-import ru.javawebinar.topjava.util.MealsUtil;
 import ru.javawebinar.topjava.web.meal.MealRestController;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
+import java.util.function.Function;
 
 public class MealServlet extends HttpServlet {
     private ConfigurableApplicationContext appCtx;
@@ -56,6 +53,15 @@ public class MealServlet extends HttpServlet {
         String action = request.getParameter("action");
 
         switch (action == null ? "all" : action) {
+            case "filter":
+                LocalDate startDate = getParam(request.getParameter("startDate"), LocalDate::parse);
+                LocalDate endDate = getParam(request.getParameter("endDate"), LocalDate::parse);
+                LocalTime startTime = getParam(request.getParameter("startTime"), LocalTime::parse);
+                LocalTime endTime = getParam(request.getParameter("endTime"), LocalTime::parse);
+
+                request.setAttribute("meals", restController.getFilteredAll(startDate, startTime, endDate, endTime));
+                request.getRequestDispatcher("/meals.jsp").forward(request, response);
+                break;
             case "delete":
                 int id = getId(request);
                 restController.delete(getId(request));
@@ -81,5 +87,13 @@ public class MealServlet extends HttpServlet {
     private int getId(HttpServletRequest request) {
         String paramId = Objects.requireNonNull(request.getParameter("id"));
         return Integer.parseInt(paramId);
+    }
+
+    private <T> T getParam(String param, Function<String, T> parser) {
+        if (param.isEmpty()) {
+            return null;
+        } else {
+            return parser.apply(param);
+        }
     }
 }

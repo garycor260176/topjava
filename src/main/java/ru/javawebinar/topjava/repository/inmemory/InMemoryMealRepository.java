@@ -20,13 +20,13 @@ public class InMemoryMealRepository implements MealRepository {
     private final AtomicInteger counter = new AtomicInteger(0);
 
     {
-        MealsUtil.userMeals.forEach(meal -> save(meal, SecurityUtil.USER_ID_1));
-        MealsUtil.userMealsHidden.forEach(meal -> save(meal, SecurityUtil.USER_ID_2)); //просто для проверки что оно не выводится
+        MealsUtil.userMeals.forEach(meal -> save(meal, SecurityUtil.USER_ID));
+        MealsUtil.userMealsHidden.forEach(meal -> save(meal, SecurityUtil.ADMIN_ID)); //просто для проверки что оно не выводится
     }
 
     @Override
     public Meal save(Meal meal, int userId) {
-        Map<Integer, Meal> meals = repository.computeIfAbsent(userId, m -> new ConcurrentHashMap<>());
+        Map<Integer, Meal> meals = repository.computeIfAbsent(userId, melaId -> new ConcurrentHashMap<>());
         if (meal.isNew()) {
             meal.setId(counter.incrementAndGet());
             meals.put(meal.getId(), meal);
@@ -54,8 +54,9 @@ public class InMemoryMealRepository implements MealRepository {
 
     @Override
     public List<Meal> getDateFilteredAll(int userId, LocalDate startDate, LocalDate endDate) {
+        LocalDate end = endDate == LocalDate.MAX ? endDate : endDate.plusDays(1);
         return filterByPredicate(userId, meal -> DateTimeUtil.isBetweenHalfOpen(
-                meal.getDate(), startDate, endDate == LocalDate.MAX ? endDate : endDate.plusDays(1)));
+                meal.getDate(), startDate, end));
     }
 
     private Map<Integer, Meal> getUserItems(int userId) {
