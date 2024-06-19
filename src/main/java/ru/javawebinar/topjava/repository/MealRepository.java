@@ -4,7 +4,6 @@ import ru.javawebinar.topjava.model.Meal;
 import java.time.LocalDate;
 import java.util.List;
 
-// TODO add userId
 public interface MealRepository {
     Meal save(Meal meal, int userId);
 

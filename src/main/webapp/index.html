@@ -7,13 +7,13 @@
 <h3>Проект <a href="https://github.com/JavaWebinar/topjava" target="_blank">Java Enterprise (Topjava)</a></h3>
 <hr>
 
-<form method="get" action="users">
+<form method="post" action="users">
     <input type="hidden" name="action" value="setUser">
     <table border="0">
         <tr>
             <td>Current user:</td>
             <td>
-                <select name="user" id="user">
+                <select name="user">
                     <option value="1">User</option>
                     <option value="2">Admin</option>
                 </select>
@@ -25,13 +25,6 @@
     </table>
 </form>
 
-<script language="JavaScript">
-    let params = new URL(document.location.toString()).searchParams;
-    let userId = params.get("userId");
-    if(userId == null) userId = 1;
-    let element = document.getElementById("user");
-    element.value = userId;
-</script>
 <ul style="font-size: large">
     <li><a href="users">Users</a></li>
     <li><a href="meals">Meals</a></li>

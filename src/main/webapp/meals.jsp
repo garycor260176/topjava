@@ -18,7 +18,7 @@
 </head>
 <body>
 <section>
-    <h3><a href="index.html?userId=${authUserId > 0 ? authUserId : ''}">Home</a></h3>
+    <h3><a href="index.html">Home</a></h3>
     <hr/>
     <h2>Meals for ${authUserId == 1 ? 'User' : 'Admin'}</h2>
 

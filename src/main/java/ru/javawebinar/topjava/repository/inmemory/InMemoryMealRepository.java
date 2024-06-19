@@ -21,7 +21,7 @@ public class InMemoryMealRepository implements MealRepository {
 
     {
         MealsUtil.userMeals.forEach(meal -> save(meal, SecurityUtil.USER_ID));
-        MealsUtil.userMealsHidden.forEach(meal -> save(meal, SecurityUtil.ADMIN_ID)); //просто для проверки что оно не выводится
+        MealsUtil.adminMeals.forEach(meal -> save(meal, SecurityUtil.ADMIN_ID)); //просто для проверки что оно не выводится
     }
 
     @Override
@@ -55,8 +55,8 @@ public class InMemoryMealRepository implements MealRepository {
     @Override
     public List<Meal> getDateFilteredAll(int userId, LocalDate startDate, LocalDate endDate) {
         LocalDate end = endDate == LocalDate.MAX ? endDate : endDate.plusDays(1);
-        return filterByPredicate(userId, meal -> DateTimeUtil.isBetweenHalfOpen(
-                meal.getDate(), startDate, end));
+        return filterByPredicate(userId,
+                meal -> DateTimeUtil.isBetweenHalfOpen(meal.getDate(), startDate, end));
     }
 
     private Map<Integer, Meal> getUserItems(int userId) {

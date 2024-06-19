@@ -13,18 +13,17 @@ public class UserServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String action = request.getParameter("action");
-        switch(action == null ? "" : action) {
-            case "setUser":
-                int userId = Integer.parseInt(request.getParameter("user"));
-                log.info("set user id {}", userId);
-                SecurityUtil.setAuthUserId(userId);
-                request.getRequestDispatcher("meals").forward(request, response);
-                break;
-            default:
-                log.debug("forward to users");
-                request.getRequestDispatcher("/users.jsp").forward(request, response);
-                break;
-        }
+        log.debug("forward to users");
+        request.getRequestDispatcher("/users.jsp").forward(request, response);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        req.setCharacterEncoding("UTF-8");
+
+        int userId = Integer.parseInt(req.getParameter("user"));
+        log.info("set active user id {}", userId);
+        SecurityUtil.setAuthUserId(userId);
+        resp.sendRedirect("meals");
     }
 }
