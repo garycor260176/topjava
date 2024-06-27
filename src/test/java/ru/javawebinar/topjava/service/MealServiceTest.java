@@ -108,4 +108,11 @@ public class MealServiceTest {
         List<Meal> meals = service.getBetweenInclusive(LocalDate.of(2020, 1, 30), LocalDate.of(2020, 1, 30), USER_ID);
         assertMatch(meals, userMeal3, userMeal2, userMeal1);
     }
+
+
+    @Test
+    public void getBetweenEmptyBoundaries() {
+        List<Meal> meals = service.getBetweenInclusive(null, null, USER_ID);
+        assertMatch(meals, userMeal7, userMeal6, userMeal5, userMeal4, userMeal3, userMeal2, userMeal1);
+    }
 }
