@@ -22,18 +22,22 @@ public class Meal extends AbstractBaseEntity {
     public static final String ALL_SORTED = "Meal.getAll";
     public static final String DELETE = "Meal.delete";
     public static final String GET_BETWEEN_HALFOPEN = "Meal.getBetweenHalfOpen";
+
     @Column(name = "date_time", nullable = false)
     @NotNull
     private LocalDateTime dateTime;
+
     @Column(name = "description", nullable = false)
     @NotBlank
     @Size(min = 1, max = 100)
     private String description;
+
     @Column(name = "calories", nullable = false)
     @Range(min = 10, max = 10000)
     private int calories;
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     @NotNull
     private User user;
 
