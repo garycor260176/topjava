@@ -2,8 +2,11 @@ package ru.javawebinar.topjava;
 
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
+import ru.javawebinar.topjava.repository.MealRepository;
+import ru.javawebinar.topjava.repository.UserRepository;
 import ru.javawebinar.topjava.to.MealTo;
 import ru.javawebinar.topjava.web.meal.MealRestController;
 import ru.javawebinar.topjava.web.user.AdminRestController;
@@ -13,6 +16,9 @@ import java.time.LocalTime;
 import java.time.Month;
 import java.util.Arrays;
 import java.util.List;
+
+import static ru.javawebinar.topjava.MealTestData.MEAL1_ID;
+import static ru.javawebinar.topjava.UserTestData.USER_ID;
 
 public class SpringMain {
     public static void main(String[] args) {
@@ -34,6 +40,19 @@ public class SpringMain {
             filteredMealsWithExcess.forEach(System.out::println);
             System.out.println();
             System.out.println(mealController.getBetween(null, null, null, null));
+
+            System.out.println("===Get meal with user===");
+            MealRepository mealRepository = appCtx.getBean(MealRepository.class);
+            Meal withUser = mealRepository.getWithUser(MEAL1_ID, USER_ID);
+            System.out.println(withUser);
+            System.out.println(withUser.getUser());
+            System.out.println(withUser.getUser().getRoles().hashCode());
+
+            System.out.println("===Get user with meals===");
+            UserRepository userRepository = appCtx.getBean(UserRepository.class);
+            User withMeals = userRepository.getWithMeals(USER_ID);
+            System.out.println(withMeals);
+            withMeals.getMeals().forEach(System.out::println);
         }
     }
 }

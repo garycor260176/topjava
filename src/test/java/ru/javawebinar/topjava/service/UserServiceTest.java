@@ -17,7 +17,7 @@ import static ru.javawebinar.topjava.UserTestData.*;
 
 public abstract class UserServiceTest extends AbstractServiceTest {
     @Autowired
-    private UserService service;
+    protected UserService service;
 
     @Autowired
     private CacheManager cacheManager;
@@ -34,7 +34,8 @@ public abstract class UserServiceTest extends AbstractServiceTest {
         User newUser = getNew();
         newUser.setId(newId);
         USER_MATCHER.assertMatch(created, newUser);
-        USER_MATCHER.assertMatch(service.get(newId), newUser);
+        User u = service.get(newId);
+        USER_MATCHER.assertMatch(u, newUser);
     }
 
     @Test
