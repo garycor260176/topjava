@@ -46,6 +46,12 @@ public class DataJpaUserRepository implements UserRepository {
     @Transactional(readOnly = true)
     @Override
     public User getWithMeals(int id) {
-        return crudRepository.getWithMeals(id);
+        User user = crudRepository.findById(id).orElse(null);
+        if (user == null) {
+            return null;
+        } else {
+            user.getMeals().size();
+            return user;
+        }
     }
 }
