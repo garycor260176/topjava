@@ -1,4 +1,4 @@
-package ru.javawebinar.topjava.service.jdbc.inmemory;
+package ru.javawebinar.topjava.repository.inmemory;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +28,6 @@ public class InMemoryMealRepository implements MealRepository {
         MealTestData.meals.forEach(userMeals::put);
         usersMealsMap.put(UserTestData.USER_ID, userMeals);
     }
-
 
     @Override
     public Meal save(Meal meal, int userId) {

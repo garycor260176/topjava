@@ -8,10 +8,8 @@
 <jsp:include page="fragments/bodyHeader.jsp"/>
 
 <section>
-    <h3><a href="index.jsp">Home</a></h3>
-    <hr>
-    <h2><spring:message code="${meal.isNew() ? 'meal.title.create' : 'meal.title.update'}"/></h2>
-    <form method="post" action="meals/save'}">
+    <h2><spring:message code="${meal.isNew() ? 'meal.title_create' : 'meal.title_update'}"/></h2>
+    <form method="post" action="meals/save">
         <input type="hidden" name="id" value="${meal.id}">
         <dl>
             <dt><spring:message code="meal.dateTime"/>:</dt>
