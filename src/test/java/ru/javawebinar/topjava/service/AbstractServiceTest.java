@@ -49,7 +49,6 @@ public abstract class AbstractServiceTest {
     }
 
     protected boolean isJpa() {
-        boolean f = env.matchesProfiles(Profiles.DATAJPA, Profiles.JPA);
-        return f;
+        return env.matchesProfiles(Profiles.DATAJPA, Profiles.JPA);
     }
 }

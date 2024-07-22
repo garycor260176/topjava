@@ -55,6 +55,16 @@ public class JspMealController extends AbstractMealController {
         return "mealForm";
     }
 
+    @PostMapping("/create")
+    public String create(HttpServletRequest request) {
+        Meal meal = new Meal(
+                LocalDateTime.parse(request.getParameter("dateTime")),
+                request.getParameter("description"),
+                Integer.parseInt(request.getParameter("calories")));
+        super.create(meal);
+        return "redirect:/meals";
+    }
+    
     @GetMapping("/update")
     public String updateForm(HttpServletRequest request, Model model) {
         int id = getId(request);
@@ -63,23 +73,19 @@ public class JspMealController extends AbstractMealController {
         return "mealForm";
     }
 
-    @PostMapping("/save")
+    @PostMapping("/update")
     public String update(HttpServletRequest request) {
         Meal meal = new Meal(
                 getId(request),
                 LocalDateTime.parse(request.getParameter("dateTime")),
                 request.getParameter("description"),
                 Integer.parseInt(request.getParameter("calories")));
-        if (meal.isNew()) {
-            super.create(meal);
-        } else {
-            super.update(meal, meal.id());
-        }
+        super.update(meal, meal.id());
         return "redirect:/meals";
     }
 
-    private Integer getId(HttpServletRequest request) {
+    private int getId(HttpServletRequest request) {
         String paramId = Objects.requireNonNull(request.getParameter("id"));
-        return paramId == "" ? null : Integer.parseInt(paramId);
+        return Integer.parseInt(paramId);
     }
 }

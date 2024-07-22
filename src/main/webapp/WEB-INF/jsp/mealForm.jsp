@@ -9,7 +9,7 @@
 
 <section>
     <h2><spring:message code="${meal.isNew() ? 'meal.title_create' : 'meal.title_update'}"/></h2>
-    <form method="post" action="meals/save">
+    <form method="post" action="${meal.isNew() ? 'meals/create' : 'meals/update'}">
         <input type="hidden" name="id" value="${meal.id}">
         <dl>
             <dt><spring:message code="meal.dateTime"/>:</dt>
