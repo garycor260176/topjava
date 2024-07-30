@@ -83,19 +83,42 @@ public class JdbcUserRepository implements UserRepository {
         if (user.isNew()) {
             Number newKey = insertUser.executeAndReturnKey(parameterSource);
             user.setId(newKey.intValue());
-            insertRoles(user);
+        } else if (namedParameterJdbcTemplate.update("""
+                   UPDATE users SET name=:name, email=:email, password=:password, 
+                                    registered=:registered, enabled=:enabled, calories_per_day=:caloriesPerDay 
+                        WHERE id=:id
+                """, parameterSource) == 0) {
+            return null;
         } else {
             deleteRoles(user);
-            insertRoles(user);
-            if (namedParameterJdbcTemplate.update("""
-                       UPDATE users SET name=:name, email=:email, password=:password, 
-                                        registered=:registered, enabled=:enabled, calories_per_day=:caloriesPerDay 
-                            WHERE id=:id
-                    """, parameterSource) == 0) {
-                return null;
-            }
         }
+        insertRoles(user);
         return user;
+    }
+
+    private void insertRoles(User user) {
+        Set<Role> roles = user.getRoles();
+
+        if (!roles.isEmpty()) {
+            Iterator<Role> iterator = roles.iterator();
+            jdbcTemplate.batchUpdate("INSERT INTO user_role(user_id, role) VALUES (?,?)",
+                    new BatchPreparedStatementSetter() {
+                        @Override
+                        public void setValues(PreparedStatement ps, int i) throws SQLException {
+                            ps.setInt(1, user.getId());
+                            ps.setString(2, iterator.next().name());
+                        }
+
+                        @Override
+                        public int getBatchSize() {
+                            return roles.size();
+                        }
+                    });
+        }
+    }
+
+    private void deleteRoles(User user) {
+        jdbcTemplate.update("DELETE FROM user_role where user_id =?", user.getId());
     }
 
     @Override
@@ -127,30 +150,5 @@ public class JdbcUserRepository implements UserRepository {
                         SELECT * FROM users LEFT JOIN user_role on users.id = user_role.user_id 
                             ORDER BY name, email""",
                 USER_WITH_ROLES_EXTRACTOR);
-    }
-
-    private void insertRoles(User user) {
-        Set<Role> roles = user.getRoles();
-
-        if (!roles.isEmpty()) {
-            Iterator<Role> iterator = roles.iterator();
-            jdbcTemplate.batchUpdate("INSERT INTO user_role(user_id, role) VALUES (?,?)",
-                    new BatchPreparedStatementSetter() {
-                        @Override
-                        public void setValues(PreparedStatement ps, int i) throws SQLException {
-                            ps.setInt(1, user.getId());
-                            ps.setString(2, iterator.next().name());
-                        }
-
-                        @Override
-                        public int getBatchSize() {
-                            return roles.size();
-                        }
-                    });
-        }
-    }
-
-    private void deleteRoles(User user) {
-        jdbcTemplate.update("DELETE FROM user_role where user_id =?", user.getId());
     }
 }
