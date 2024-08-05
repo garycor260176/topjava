@@ -6,11 +6,17 @@ import ru.javawebinar.topjava.model.User;
 import java.util.Collections;
 import java.util.Date;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static ru.javawebinar.topjava.model.AbstractBaseEntity.START_SEQ;
 
 public class UserTestData {
     public static final MatcherFactory.Matcher<User> USER_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(User.class, "registered", "meals");
-    public static final MatcherFactory.Matcher<User> USER_WITH_MEALS_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(User.class, "registered");
+    public static MatcherFactory.Matcher<User> USER_WITH_MEALS_MATCHER =
+            MatcherFactory.usingAssertions(User.class,
+                    (a, e) -> assertThat(a).usingRecursiveComparison().ignoringFields("registered", "meals.user").isEqualTo(e),
+                    (a, e) -> {
+                        throw new UnsupportedOperationException();
+                    });
 
     public static final int USER_ID = START_SEQ;
     public static final int ADMIN_ID = START_SEQ + 1;

@@ -17,7 +17,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static ru.javawebinar.topjava.MealTestData.MEAL_MATCHER;
 import static ru.javawebinar.topjava.UserTestData.*;
 
 class AdminRestControllerTest extends AbstractControllerTest {
@@ -89,15 +88,11 @@ class AdminRestControllerTest extends AbstractControllerTest {
 
     @Test
     void getWithMeals() throws Exception {
-        Assumptions.assumeFalse(profileIsActive(Profiles.JDBC));
-        ResultActions action = perform(MockMvcRequestBuilders.get(REST_URL + "with-meals/" + ADMIN_ID))
+        Assumptions.assumeTrue(profileIsActive(Profiles.DATAJPA));
+        ResultActions action = perform(MockMvcRequestBuilders.get(REST_URL + ADMIN_ID + "/with-meals"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
-
-        User admin = USER_WITH_MEALS_MATCHER.readFromJson(action);
-
-        USER_MATCHER.assertMatch(admin, adminWithMeals);
-        MEAL_MATCHER.assertMatch(admin.getMeals(), adminWithMeals.getMeals());
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(USER_WITH_MEALS_MATCHER.contentJson(adminWithMeals));
     }
 }

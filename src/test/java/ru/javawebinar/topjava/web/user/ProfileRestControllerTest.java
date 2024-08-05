@@ -15,7 +15,6 @@ import ru.javawebinar.topjava.web.json.JsonUtil;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static ru.javawebinar.topjava.MealTestData.MEAL_MATCHER;
 import static ru.javawebinar.topjava.UserTestData.*;
 import static ru.javawebinar.topjava.web.user.ProfileRestController.REST_URL;
 
@@ -52,14 +51,11 @@ class ProfileRestControllerTest extends AbstractControllerTest {
 
     @Test
     void getWithMeals() throws Exception {
-        Assumptions.assumeFalse(profileIsActive(Profiles.JDBC));
+        Assumptions.assumeTrue(profileIsActive(Profiles.DATAJPA));
         ResultActions action = perform(MockMvcRequestBuilders.get(REST_URL + "/with-meals"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
-
-        User user = USER_WITH_MEALS_MATCHER.readFromJson(action);
-        USER_MATCHER.assertMatch(user, userWithMeals);
-        MEAL_MATCHER.assertMatch(user.getMeals(), userWithMeals.getMeals());
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(USER_WITH_MEALS_MATCHER.contentJson(userWithMeals));
     }
 }
