@@ -44,6 +44,7 @@ public class DataJpaUserRepository implements UserRepository {
 
     @Override
     public User getWithMeals(int id) {
-        return crudRepository.getWithMeals(id);
+        User u = crudRepository.getWithMeals(id);
+        return u;
     }
 }

@@ -7,7 +7,6 @@ import ru.javawebinar.topjava.web.json.JsonUtil;
 
 import java.io.UnsupportedEncodingException;
 import java.util.List;
-import java.util.function.BiConsumer;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -18,31 +17,21 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Support converting json MvcResult to objects for comparation.
  */
 public class MatcherFactory {
-    public static <T> Matcher<T> usingAssertions(Class<T> clazz, BiConsumer<T, T> assertion, BiConsumer<Iterable<T>,
-            Iterable<T>> iterableAssertion) {
-        return new Matcher<>(clazz, assertion, iterableAssertion);
-    }
-
     public static <T> Matcher<T> usingIgnoringFieldsComparator(Class<T> clazz, String... fieldsToIgnore) {
-        return usingAssertions(clazz,
-                (a, e) -> assertThat(a).usingRecursiveComparison().ignoringFields(fieldsToIgnore).isEqualTo(e),
-                (a, e) -> assertThat(a).usingRecursiveFieldByFieldElementComparatorIgnoringFields(fieldsToIgnore).isEqualTo(e));
+        return new Matcher<>(clazz, fieldsToIgnore);
     }
 
     public static class Matcher<T> {
         private final Class<T> clazz;
-        //private final String[] fieldsToIgnore;
-        private final BiConsumer<T, T> assertion;
-        private final BiConsumer<Iterable<T>, Iterable<T>> iterableAssertion;
+        private final String[] fieldsToIgnore;
 
-        private Matcher(Class<T> clazz, BiConsumer<T, T> assertion, BiConsumer<Iterable<T>, Iterable<T>> iterableAssertion) {
+        private Matcher(Class<T> clazz, String... fieldsToIgnore) {
             this.clazz = clazz;
-            this.assertion = assertion;
-            this.iterableAssertion = iterableAssertion;
+            this.fieldsToIgnore = fieldsToIgnore;
         }
 
         public void assertMatch(T actual, T expected) {
-            assertion.accept(actual, expected);
+            assertThat(actual).usingRecursiveComparison().ignoringFields(fieldsToIgnore).isEqualTo(expected);
         }
 
         @SafeVarargs
@@ -51,7 +40,7 @@ public class MatcherFactory {
         }
 
         public void assertMatch(Iterable<T> actual, Iterable<T> expected) {
-            iterableAssertion.accept(actual, expected);
+            assertThat(actual).usingRecursiveFieldByFieldElementComparatorIgnoringFields(fieldsToIgnore).isEqualTo(expected);
         }
 
         public ResultMatcher contentJson(T expected) {
