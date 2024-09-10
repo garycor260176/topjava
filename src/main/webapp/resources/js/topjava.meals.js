@@ -18,35 +18,69 @@ function clearFilter() {
 }
 
 $(function () {
-    makeEditable(
-        $("#datatable").DataTable({
-            "paging": false,
-            "info": true,
-            "columns": [
-                {
-                    "data": "dateTime"
-                },
-                {
-                    "data": "description"
-                },
-                {
-                    "data": "calories"
-                },
-                {
-                    "defaultContent": "Edit",
-                    "orderable": false
-                },
-                {
-                    "defaultContent": "Delete",
-                    "orderable": false
+    makeEditable({
+        "columns": [
+            {
+                "data": "dateTime",
+                "render": function (date, type, row) {
+                    if (type === 'display') {
+                        return formatDate(date);
+                    }
+                    return date;
                 }
-            ],
-            "order": [
-                [
-                    0,
-                    "desc"
-                ]
+            },
+            {
+                "data": "description"
+            },
+            {
+                "data": "calories"
+            },
+            {
+                "render": renderEditBtn,
+                "defaultContent": "",
+                "orderable": false
+            },
+            {
+                "render": renderDeleteBtn,
+                "defaultContent": "",
+                "orderable": false
+            }
+        ],
+        "order": [
+            [
+                0,
+                "desc"
             ]
-        })
-    );
+        ],
+        "createdRow": function (row, data, dataIndex) {
+            $(row).attr("data-meal-excess", data.excess);
+        }
+    });
+
+    const dateOptions = {
+        timepicker: false,
+        format: 'Y-m-d',
+        formatDate: 'Y-m-d',
+    };
+    $('#startDate').datetimepicker({
+        ...dateOptions
+    });
+    $('#endDate').datetimepicker({
+        ...dateOptions
+    });
+
+    const timeOptions = {
+        datepicker: false,
+        format: 'H:i'
+    };
+    $('#startTime').datetimepicker({
+        ...timeOptions
+    });
+    $('#endTime').datetimepicker({
+        ...timeOptions
+    });
+
+    $('#dateTime').datetimepicker({
+        format: 'Y-m-d H:i'
+    });
 });
