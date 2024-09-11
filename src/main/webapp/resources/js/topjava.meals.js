@@ -63,10 +63,20 @@ $(function () {
         formatDate: 'Y-m-d',
     };
     $('#startDate').datetimepicker({
-        ...dateOptions
+        ...dateOptions,
+        onShow: function (ct) {
+            this.setOptions({
+                maxDate: $('#endDate').val() ? $('#endDate').val() : false
+            })
+        }
     });
     $('#endDate').datetimepicker({
-        ...dateOptions
+        ...dateOptions,
+        onShow: function (ct) {
+            this.setOptions({
+                minDate: $('#startDate').val() ? $('#startDate').val() : false
+            })
+        }
     });
 
     const timeOptions = {
@@ -74,10 +84,20 @@ $(function () {
         format: 'H:i'
     };
     $('#startTime').datetimepicker({
-        ...timeOptions
+        ...timeOptions,
+        onShow: function (ct) {
+            this.setOptions({
+                maxTime: $('#endTime').val() ? $('#endTime').val() : false
+            })
+        }
     });
     $('#endTime').datetimepicker({
-        ...timeOptions
+        ...timeOptions,
+        onShow: function (ct) {
+            this.setOptions({
+                minTime: $('#startTime').val() ? $('#startTime').val() : false
+            })
+        }
     });
 
     $('#dateTime').datetimepicker({
