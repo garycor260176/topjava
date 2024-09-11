@@ -1,10 +1,9 @@
 package ru.javawebinar.topjava.model;
 
+import org.hibernate.Hibernate;
 import ru.javawebinar.topjava.HasId;
 
 import javax.persistence.*;
-
-import static ru.javawebinar.topjava.util.Util.getEffectiveClass;
 
 @MappedSuperclass
 // http://stackoverflow.com/questions/594597/hibernate-annotations-which-is-better-field-or-property-access
@@ -47,12 +46,12 @@ public abstract class AbstractBaseEntity implements HasId {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getEffectiveClass(this) != getEffectiveClass(o)) return false;
-        return getId() != null && getId().equals(((AbstractBaseEntity) o).getId());
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        return id != null && id.equals(((AbstractBaseEntity) o).id);
     }
 
     @Override
-    public final int hashCode() {
-        return getEffectiveClass(this).hashCode();
+    public int hashCode() {
+        return Hibernate.getClass(this).hashCode();
     }
 }
